@@ -22,30 +22,41 @@ export default function App() {
     </div>
   );
 }
-
+//make the accordion component reusable so that you use it to display other data
 function Accordion({ data }) {
+  const [curOpen, setCurOpen] = useState(null);
   return (
     <div className="accordion">
-      {data.map((faq, i) => (
-        <AccordionItem faqObj={faq} index={i} />
+      {data.map((faq, index) => (
+        <AccordionItem
+          curOpen={curOpen}
+          onOpen={setCurOpen}
+          faqObj={faq}
+          num={index}
+          key={faq.title}
+        >
+          {/* children prop */}
+          {faq.text}
+        </AccordionItem>
       ))}
     </div>
   );
 }
 
-function AccordionItem({ faqObj, index }) {
-  const [isOpen, setIsOpen] = useState(false);
+function AccordionItem({ faqObj, num, curOpen, onOpen, children }) {
+  const isOpen = num === curOpen;
 
+  const handleToggle = () => {
+    onOpen(isOpen ? null : num);
+  };
   return (
-    <div className="item">
-      <p className="number">0{index + 1}</p>
-      <p className="title">{faqObj.title}</p>
-      <p className="icon" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? "-" : "+"}
-      </p>
+    <div className={`item ${isOpen ? "open" : ""}`} onClick={handleToggle}>
+      <p className="number">{num < 9 ? `0${num + 1}` : `${num + 1}`}</p>
+      <p className={"title"}>{faqObj.title}</p>
+      <p className="icon">{isOpen ? "-" : "+"}</p>
       {isOpen && (
         <div className="content-box">
-          <p>{faqObj.text}</p>
+          <p>{children}</p>
         </div>
       )}
     </div>
