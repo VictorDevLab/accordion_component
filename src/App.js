@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const faqs = [
   {
     title: "Where are these chairs assembled?",
@@ -16,29 +18,36 @@ const faqs = [
 export default function App() {
   return (
     <div>
-      <Accordion />
+      <Accordion data={faqs} />
     </div>
   );
 }
 
-function Accordion() {
+function Accordion({ data }) {
   return (
     <div className="accordion">
-      {faqs.map((faq, i) => (
-        <Item faqObj={faq} index={i} />
+      {data.map((faq, i) => (
+        <AccordionItem faqObj={faq} index={i} />
       ))}
     </div>
   );
 }
 
-function Item({ faqObj, index }) {
+function AccordionItem({ faqObj, index }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div>
-      <p>{index}</p>
-      <h2 className="title">{faqObj.title}</h2>
-      <div className="content-box">
-        <p>{faqObj.text}</p>
-      </div>
+    <div className="item">
+      <p className="number">0{index + 1}</p>
+      <p className="title">{faqObj.title}</p>
+      <p className="icon" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? "-" : "+"}
+      </p>
+      {isOpen && (
+        <div className="content-box">
+          <p>{faqObj.text}</p>
+        </div>
+      )}
     </div>
   );
 }
